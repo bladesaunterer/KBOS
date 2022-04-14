@@ -1,4 +1,4 @@
-#!/bin/bash 
+#!/bin/bash
 
 SLEEP_SCRIPTS_DIR=~/.sleepscripts
 LAUNCH_AGENTS_PATH=~/Library/LaunchAgents/
@@ -12,7 +12,7 @@ while test $# -gt 0; do
         echo "KBOS - Kill Bluetooth on sleep 🔪🎧😴"
         echo "**************************************"
         echo " "
-        echo "When run without arguments, this script installs Blueutil and sleepwatcher ( if not installed already ), and configures the two to work together in order to disable bluetooth everytime the computer goes to sleep." 
+        echo "When run without arguments, this script installs Blueutil and sleepwatcher ( if not installed already ), and configures the two to work together in order to disable bluetooth everytime the computer goes to sleep."
         echo " "
         echo "options:"
         echo "-h, --help                show brief help"
@@ -23,28 +23,28 @@ while test $# -gt 0; do
         ;;
     -d|--disable)
         OUTPUT="$(launchctl unload ${KBOS_PLIST_PATH} 2>&1)"
-        if [[ $OUTPUT == "" ]]; then 
+        if [[ $OUTPUT == "" ]]; then
             echo "KBOS Disabled ✋🏻"
-        else   
+        else
             echo "${OUTPUT}"
-        fi 
+        fi
         ;;
     -e|--enable)
         OUTPUT="$(launchctl load ${KBOS_PLIST_PATH} 2>&1)"
-        if [[ $OUTPUT == "" ]]; then 
+        if [[ $OUTPUT == "" ]]; then
             echo "KBOS Enabled 🔪"
             exit 0;
-        else   
+        else
             echo "${OUTPUT}"
-            exit 0; 
-        fi 
+            exit 0;
+        fi
         ;;
       -u|--uninstall)
         if [ -d "${SLEEP_SCRIPTS_DIR}" ]; then
             echo "* Removing sleepscripts dir"
             rm -r ${SLEEP_SCRIPTS_DIR}
         fi
-        
+
         if [ -f  "${KBOS_PLIST_PATH}" ]; then
             echo "* Removing Plist"
             rm ${KBOS_PLIST_PATH};
@@ -53,7 +53,7 @@ while test $# -gt 0; do
         echo "KBOS has successfully been uninstalled 🙅🏽‍♂️"
         ;;
     *)
-      echo "${1} is an unknown argument." 
+      echo "${1} is an unknown argument."
       exit 0;
       ;;
   esac
@@ -61,7 +61,7 @@ while test $# -gt 0; do
 done
 
 # Install KBOS
-echo "***************************" 
+echo "***************************"
 echo "Checking for prerequisites"
 echo "***************************"
 
@@ -89,15 +89,22 @@ else
     echo "** sleepwatcher OK"
 fi
 
+# Check for jq
+if [[ $(brew ls --versions jq) == "" ]]; then
+    echo "Could not find sleepwatcher, Installing ..."
+    brew install jq || exit 1
+else
+    echo "** jq OK"
+fi
+
 echo " "
-echo "***********************" 
+echo "***********************"
 echo "Preparing sleep scripts"
-echo "***********************" 
+echo "***********************"
 
 # Copy sleepscripts to user directory
 mkdir -p ${SLEEP_SCRIPTS_DIR} || exit 1;
-cp ./disable_bluetooth.sh ${SLEEP_SCRIPTS_DIR} || exit 1;
-cp ./enable_bluetooth.sh ${SLEEP_SCRIPTS_DIR} || exit 1;
+cp ./disconnect_bluetooth_audio_devices.sh ${SLEEP_SCRIPTS_DIR} || exit 1;
 chmod +x ${SLEEP_SCRIPTS_DIR}/* || exit 1;
 echo "** sleep scripts copied to ~/.sleepscripts"
 
