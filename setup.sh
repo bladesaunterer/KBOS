@@ -49,6 +49,14 @@ while test $# -gt 0; do
             echo "* Removing Plist"
             rm ${KBOS_PLIST_PATH};
         fi
+
+        OUTPUT="$(launchctl unload ${KBOS_PLIST_PATH} 2>&1)"
+        if [[ $OUTPUT == "" ]]; then
+            echo "KBOS Disabled ✋🏻"
+        else
+            echo "${OUTPUT}"
+        fi
+        ;;
         echo "* To uninstall Blueutil and Sleepwatcher, please visit https://docs.brew.sh/FAQ#how-do-i-uninstall-a-formula"
         echo "KBOS has successfully been uninstalled 🙅🏽‍♂️"
         ;;
