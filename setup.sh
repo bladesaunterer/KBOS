@@ -56,8 +56,8 @@ while test $# -gt 0; do
         else
             echo "${OUTPUT}"
         fi
-        ;;
-        echo "* To uninstall Blueutil and Sleepwatcher, please visit https://docs.brew.sh/FAQ#how-do-i-uninstall-a-formula"
+        
+        echo "To uninstall Blueutil and Sleepwatcher, please visit https://docs.brew.sh/FAQ#how-do-i-uninstall-a-formula"
         echo "KBOS has successfully been uninstalled 🙅🏽‍♂️"
         ;;
     *)
@@ -116,7 +116,8 @@ cp ./disconnect_bluetooth_audio_devices.sh ${SLEEP_SCRIPTS_DIR} || exit 1;
 chmod +x ${SLEEP_SCRIPTS_DIR}/* || exit 1;
 echo "** sleep scripts copied to ~/.sleepscripts"
 
-# Copy plist to ~/Library/LaunchAgents
+# Copy plist to ~/Library/LaunchAgents - after creating the directory if it doesn't exist 
+mkdir -p ${LAUNCH_AGENTS_PATH} || exit 1;
 cp ./sleepwatch_bluetooth.plist ${LAUNCH_AGENTS_PATH} || exit 1;
 echo "** sleepwatch_bluetooth.plist copied to  ${LAUNCH_AGENTS_PATH}"
 launchctl load ${KBOS_PLIST_PATH}
